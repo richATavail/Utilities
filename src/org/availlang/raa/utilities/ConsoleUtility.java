@@ -34,6 +34,7 @@ package org.availlang.raa.utilities;
 import java.io.Console;
 import java.io.PrintStream;
 import java.util.Arrays;
+import java.util.Formatter;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -83,6 +84,21 @@ public abstract class ConsoleUtility
 	 *        The String to print.
 	 */
 	public abstract void println (final String s);
+
+	/**
+	 * Print a String {@linkplain String#format(String, Object...) formatted
+	 * String}.
+	 *
+	 * @param s
+	 *        The base String that adheres to the rules for the base String in
+	 *        {@link Formatter}.
+	 * @param args
+	 *        The {@code Formatter} arguments to place in the String.
+	 */
+	public void printf (final String s, final Object... args)
+	{
+		print(String.format(s, args));
+	}
 
 	/**
 	 * Read a line of text from input.
@@ -203,17 +219,106 @@ public abstract class ConsoleUtility
 		do
 		{
 			final String line = readNonEmptyString(prompt);
-			int choice;
+			int entry;
 			try
 			{
-				choice = Integer.parseInt(line);
+				entry = Integer.parseInt(line);
 			}
 			catch (final NumberFormatException e)
 			{
 				println(line + " is not a valid integer");
 				continue;
 			}
-			return choice;
+			return entry;
+		}
+		while (true);
+	}
+
+	/**
+	 * Read an {@code integer} from input that is greater or equal to the
+	 * provided {@code lowerBound}.
+	 *
+	 * @param prompt
+	 *        The String to print to prompt the user for input.
+	 * @param lowerBound
+	 *        The lower bound, inclusive, that the entry must be greater
+	 *        than or equal to.
+	 * @return An {@code integer}.
+	 */
+	public int readLowerBoundedInt (
+		final String prompt,
+		final int lowerBound)
+	{
+		do
+		{
+			final int entry = readInt(prompt);
+			if (entry >= lowerBound)
+			{
+				return entry;
+			}
+			println(entry + " is not a greater than or equal to " + lowerBound);
+			println("Entered value must be greater than equal to "
+				+ lowerBound);
+		}
+		while (true);
+	}
+
+	/**
+	 * Read an {@code integer} from input that is strictly lesser than the
+	 * provided {@code upperBound}.
+	 *
+	 * @param prompt
+	 *        The String to print to prompt the user for input.
+	 * @param upperBound
+	 *        The upper bound, not inclusive, that the entry must be lesser
+	 *        than.
+	 * @return An {@code integer}.
+	 */
+	public int readUpperBoundedInt (
+		final String prompt,
+		final int upperBound)
+	{
+		do
+		{
+			final int entry = readInt(prompt);
+			if (entry < upperBound)
+			{
+				return entry;
+			}
+			println(entry + " is not a lesser than " + upperBound);
+			println("Entered value must be lesser than " + upperBound);
+		}
+		while (true);
+	}
+
+	/**
+	 * Read an {@code integer} from input that is bounded by the {@code
+	 * lowerBound}, inclusive, and the {@code upperBound}, exclusive.
+	 *
+	 * @param prompt
+	 *        The String to print to prompt the user for input.
+	 * @param lowerBound
+	 *        The lower bound inclusive, that the entry must be greater
+	 *        than or equal to.
+	 * @param upperBound
+	 *        The upper bound, not inclusive, that the entry must be lesser
+	 *        than.
+	 * @return An {@code integer}.
+	 */
+	public int readBoundedInt (
+		final String prompt,
+		final int lowerBound,
+		final int upperBound)
+	{
+		do
+		{
+			final int entry = readInt(prompt);
+			if (entry < upperBound && entry >= lowerBound)
+			{
+				return entry;
+			}
+			println(entry + " is not in the range [" + lowerBound + ","
+				+ upperBound + ").\nEntered value must be in this range.");
 		}
 		while (true);
 	}
